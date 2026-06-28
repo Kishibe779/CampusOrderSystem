@@ -1,0 +1,49 @@
+<view class="page">
+  <view class="hero">
+    <view>
+      <view class="hero-title">今天想吃什么？</view>
+      <view class="hero-subtitle">支持即时点餐、预约自取、送餐和团餐预订</view>
+    </view>
+    <button class="btn secondary group-btn" bindtap="goGroup">团餐</button>
+  </view>
+
+  <view class="search-bar">
+    <input class="search-input" placeholder="搜索菜品、标签" value="{{keyword}}" bindinput="onKeyword" confirm-type="search" bindconfirm="refresh" />
+    <button class="btn search-btn" bindtap="refresh">搜索</button>
+  </view>
+
+  <scroll-view scroll-x class="categories">
+    <view
+      wx:for="{{categories}}"
+      wx:key="id"
+      class="category {{activeCategory === item.id ? 'active' : ''}}"
+      data-id="{{item.id}}"
+      bindtap="changeCategory"
+    >{{item.name}}</view>
+  </scroll-view>
+
+  <view class="section-title">推荐菜品</view>
+  <view class="dish-card card" wx:for="{{dishes}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
+    <view class="dish-image">{{item.initial}}</view>
+    <view class="dish-info">
+      <view class="row">
+        <view class="dish-name">{{item.name}}</view>
+        <view class="price">¥{{item.price}}</view>
+      </view>
+      <view class="muted dish-desc">{{item.desc}}</view>
+      <view class="row">
+        <view>
+          <text class="pill" wx:for="{{item.tags}}" wx:key="*this">{{item}}</text>
+        </view>
+        <view class="muted">评分 {{item.rating}} · 月售 {{item.sales}}</view>
+      </view>
+      <view class="row stock-row">
+        <view class="muted">库存 {{item.stock}}</view>
+        <button class="btn add-btn" catchtap="addCart" data-id="{{item.id}}">加购物车</button>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty">加载中...</view>
+  <view wx:elif="{{!hasMore}}" class="empty">已加载全部菜品</view>
+</view>

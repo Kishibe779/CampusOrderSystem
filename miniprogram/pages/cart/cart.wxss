@@ -1,0 +1,32 @@
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-name {
+  font-weight: 700;
+  font-size: 31rpx;
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+}
+
+.counter-btn {
+  width: 58rpx;
+  height: 58rpx;
+  line-height: 58rpx;
+  padding: 0;
+  border-radius: 50%;
+  background: #e7f2eb;
+  color: #0f5132;
+}
+
+.summary {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+}

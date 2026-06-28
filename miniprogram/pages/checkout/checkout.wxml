@@ -1,0 +1,36 @@
+<view class="page">
+  <view class="card">
+    <view class="section-title">取餐方式</view>
+    <radio-group bindchange="onTypeChange">
+      <label class="choice"><radio value="pickup" checked="{{orderType === 'pickup'}}" color="#0f5132" />到店自取</label>
+      <label class="choice"><radio value="delivery" checked="{{orderType === 'delivery'}}" color="#0f5132" />送餐到指定地点</label>
+    </radio-group>
+    <picker mode="time" bindchange="onTimeChange">
+      <view class="picker mt">预约时间：{{mealTime || '请选择时间'}}</view>
+    </picker>
+  </view>
+
+  <view class="card" wx:if="{{orderType === 'delivery'}}">
+    <view class="row">
+      <view class="section-title inline">送餐地址</view>
+      <button class="btn secondary small" bindtap="goAddress">管理</button>
+    </view>
+    <picker range="{{addressOptions}}" bindchange="onAddressChange">
+      <view class="picker">{{selectedAddress ? selectedAddress.detail : '请选择地址'}}</view>
+    </picker>
+  </view>
+
+  <view class="card">
+    <view class="section-title">订单明细</view>
+    <view class="row line" wx:for="{{cart}}" wx:key="id">
+      <view>{{item.name}} x{{item.quantity}}</view>
+      <view>¥{{item.price * item.quantity}}</view>
+    </view>
+    <view class="row total">
+      <view>合计</view>
+      <view class="price">¥{{summary.amount}}</view>
+    </view>
+  </view>
+
+  <button class="btn" bindtap="submit">模拟支付并提交</button>
+</view>

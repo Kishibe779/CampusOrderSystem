@@ -1,0 +1,28 @@
+.status-tabs {
+  white-space: nowrap;
+  margin-bottom: 22rpx;
+}
+
+.tab {
+  display: inline-block;
+  padding: 14rpx 24rpx;
+  margin-right: 12rpx;
+  border-radius: 999rpx;
+  background: #fffdf7;
+  border: 1rpx solid #ece4d2;
+  color: #667085;
+}
+
+.tab.active {
+  color: #fff;
+  background: #0f5132;
+}
+
+.order-no {
+  font-weight: 800;
+}
+
+.items {
+  margin: 18rpx 0;
+  line-height: 1.5;
+}

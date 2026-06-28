@@ -1,0 +1,22 @@
+<view class="page">
+  <view class="card">
+    <input class="input" placeholder="收货人" value="{{form.name}}" data-field="name" bindinput="onInput" />
+    <input class="input mt" placeholder="手机号" value="{{form.phone}}" data-field="phone" bindinput="onInput" />
+    <textarea class="textarea mt" placeholder="楼栋、宿舍/办公室、详细地址" value="{{form.detail}}" data-field="detail" bindinput="onInput"></textarea>
+    <label class="default-row">
+      <checkbox checked="{{form.isDefault}}" data-field="isDefault" bindtap="toggleDefault" color="#0f5132" />
+      设为默认地址
+    </label>
+    <button class="btn" bindtap="save">保存地址</button>
+  </view>
+
+  <view class="section-title">已有地址</view>
+  <view class="card" wx:for="{{addresses}}" wx:key="id">
+    <view class="row">
+      <view class="addr-name">{{item.name}} {{item.phone}}</view>
+      <text class="pill" wx:if="{{item.isDefault}}">默认</text>
+    </view>
+    <view class="muted addr-detail">{{item.detail}}</view>
+    <button class="btn secondary small" data-id="{{item.id}}" bindtap="edit">编辑</button>
+  </view>
+</view>

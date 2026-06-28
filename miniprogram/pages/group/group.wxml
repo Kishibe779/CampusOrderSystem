@@ -1,0 +1,22 @@
+<view class="page">
+  <view class="card">
+    <view class="section-title">团餐信息</view>
+    <input class="input" placeholder="组织方/班级/接待单位" value="{{form.orgName}}" data-field="orgName" bindinput="onInput" />
+    <input class="input mt" type="number" placeholder="就餐人数" value="{{form.peopleCount}}" data-field="peopleCount" bindinput="onInput" />
+    <picker mode="date" bindchange="onDate">
+      <view class="picker mt">用餐日期：{{form.date || '请选择'}}</view>
+    </picker>
+    <picker mode="time" bindchange="onTime">
+      <view class="picker mt">用餐时间：{{form.time || '请选择'}}</view>
+    </picker>
+    <textarea class="textarea mt" placeholder="桌餐/盒饭、忌口、发票、名单等特殊要求" value="{{form.note}}" data-field="note" bindinput="onInput"></textarea>
+  </view>
+  <view class="card">
+    <view class="section-title">推荐套餐</view>
+    <label class="choice" wx:for="{{packages}}" wx:key="name">
+      <radio value="{{item.name}}" checked="{{form.packageName === item.name}}" data-name="{{item.name}}" bindtap="selectPackage" color="#0f5132" />
+      {{item.name}} · ¥{{item.price}}/人 · {{item.desc}}
+    </label>
+  </view>
+  <button class="btn" bindtap="submit">提交团餐预订</button>
+</view>

@@ -1,0 +1,48 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/index/index",
+    "pages/detail/detail",
+    "pages/cart/cart",
+    "pages/checkout/checkout",
+    "pages/orders/orders",
+    "pages/order-detail/order-detail",
+    "pages/address/address",
+    "pages/admin/admin",
+    "pages/group/group",
+    "pages/review/review"
+  ],
+  "window": {
+    "navigationBarTitleText": "校园点餐",
+    "navigationBarBackgroundColor": "#0f5132",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f7f4ec"
+  },
+  "tabBar": {
+    "color": "#667085",
+    "selectedColor": "#0f5132",
+    "backgroundColor": "#fffdf7",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "点餐"
+      },
+      {
+        "pagePath": "pages/cart/cart",
+        "text": "购物车"
+      },
+      {
+        "pagePath": "pages/orders/orders",
+        "text": "订单"
+      },
+      {
+        "pagePath": "pages/admin/admin",
+        "text": "管理"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}

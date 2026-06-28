@@ -1,0 +1,9 @@
+.mt {
+  margin-top: 18rpx;
+}
+
+.choice {
+  display: block;
+  line-height: 1.6;
+  padding: 14rpx 0;
+}

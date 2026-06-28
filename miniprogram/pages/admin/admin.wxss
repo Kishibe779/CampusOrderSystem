@@ -1,0 +1,47 @@
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  text-align: center;
+}
+
+.stat-num {
+  color: #0f5132;
+  font-size: 38rpx;
+  font-weight: 900;
+}
+
+.verify-row {
+  display: flex;
+  gap: 14rpx;
+}
+
+.code-input {
+  flex: 1;
+}
+
+.verify-btn {
+  width: 150rpx;
+}
+
+.order-no {
+  font-weight: 800;
+}
+
+.action-row {
+  margin-top: 18rpx;
+  justify-content: flex-start;
+}
+
+.small {
+  width: 118rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  font-size: 24rpx;
+  padding: 0;
+}
+
+.dish-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

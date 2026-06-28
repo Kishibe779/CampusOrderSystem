@@ -1,0 +1,21 @@
+<view class="page">
+  <view class="empty" wx:if="{{cart.length === 0}}">购物车为空，去首页添加喜欢的菜品吧</view>
+  <view wx:else>
+    <view class="cart-item card" wx:for="{{cart}}" wx:key="id">
+      <view>
+        <view class="item-name">{{item.name}}</view>
+        <view class="price">¥{{item.price}}</view>
+      </view>
+      <view class="counter">
+        <button class="counter-btn" data-id="{{item.id}}" bindtap="minus">-</button>
+        <text>{{item.quantity}}</text>
+        <button class="counter-btn" data-id="{{item.id}}" bindtap="plus">+</button>
+      </view>
+    </view>
+    <view class="summary card">
+      <view>共 {{summary.count}} 件</view>
+      <view class="price">合计 ¥{{summary.amount}}</view>
+    </view>
+    <button class="btn" bindtap="checkout">去结算</button>
+  </view>
+</view>

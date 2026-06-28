@@ -1,0 +1,19 @@
+<view class="page">
+  <scroll-view scroll-x class="status-tabs">
+    <view wx:for="{{tabs}}" wx:key="value" class="tab {{status === item.value ? 'active' : ''}}" data-value="{{item.value}}" bindtap="changeStatus">{{item.label}}</view>
+  </scroll-view>
+
+  <view class="empty" wx:if="{{orders.length === 0}}">暂无订单</view>
+  <view class="card order-card" wx:for="{{orders}}" wx:key="id" data-id="{{item.id}}" bindtap="goDetail">
+    <view class="row">
+      <view class="order-no">{{item.orderNo}}</view>
+      <view class="pill">{{statusTextMap[item.status]}}</view>
+    </view>
+    <view class="muted">{{item.createdAt}}</view>
+    <view class="items">{{item.summary}}</view>
+    <view class="row">
+      <view class="muted">{{item.orderType === 'delivery' ? '送餐' : '自取'}} {{item.mealTime}}</view>
+      <view class="price">¥{{item.totalAmount}}</view>
+    </view>
+  </view>
+</view>

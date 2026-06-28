@@ -1,0 +1,18 @@
+{
+  "description": "校园点餐系统 - 微信小程序云开发路线A",
+  "packOptions": {
+    "ignore": []
+  },
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "postcss": true,
+    "minified": true
+  },
+  "compileType": "miniprogram",
+  "libVersion": "3.5.8",
+  "appid": "touristappid",
+  "projectname": "campus-ordering-miniapp",
+  "cloudfunctionRoot": "cloudfunctions/",
+  "miniprogramRoot": "miniprogram/"
+}

@@ -1,0 +1,49 @@
+<view class="page" wx:if="{{order}}">
+  <view class="card">
+    <view class="row">
+      <view class="order-title">{{order.orderNo}}</view>
+      <text class="pill">{{statusLabel}}</text>
+    </view>
+    <view class="muted">创建时间：{{order.createdAt}}</view>
+  </view>
+
+  <view class="card pickup" wx:if="{{order.pickupCode}}">
+    <view class="muted">取餐凭证</view>
+    <view class="pickup-code">{{order.pickupCode}}</view>
+    <view class="muted">到窗口出示此码，管理员核销后状态更新为已取餐</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">订单明细</view>
+    <view class="row line" wx:for="{{order.items}}" wx:key="id">
+      <view>{{item.name}} x{{item.quantity}}</view>
+      <view>¥{{item.price * item.quantity}}</view>
+    </view>
+    <view class="row total">
+      <view>合计</view>
+      <view class="price">¥{{order.totalAmount}}</view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{order.orderType === 'delivery'}}">
+    <view class="section-title">送餐信息</view>
+    <view>{{order.address.name}} {{order.address.phone}}</view>
+    <view class="muted">{{order.address.detail}}</view>
+    <button wx:if="{{order.status === 'delivering'}}" class="btn" bindtap="confirmReceive">确认收货</button>
+  </view>
+
+  <view class="card">
+    <view class="section-title">状态时间线</view>
+    <view class="timeline-item" wx:for="{{order.timeline}}" wx:key="index">
+      <view class="dot"></view>
+      <view>{{item.text}}</view>
+    </view>
+  </view>
+
+  <view class="card receipt">
+    <view class="section-title">电子小票</view>
+    <text selectable>{{receipt}}</text>
+  </view>
+
+  <button wx:if="{{order.status === 'completed' || order.status === 'picked'}}" class="btn secondary" bindtap="goReview">评价订单</button>
+</view>

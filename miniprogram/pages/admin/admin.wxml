@@ -1,0 +1,47 @@
+<view class="page">
+  <view class="card stats">
+    <view>
+      <view class="stat-num">{{stats.orderCount}}</view>
+      <view class="muted">订单数</view>
+    </view>
+    <view>
+      <view class="stat-num">¥{{stats.amount}}</view>
+      <view class="muted">销售额</view>
+    </view>
+    <view>
+      <view class="stat-num">{{stats.pickupCount}}</view>
+      <view class="muted">待/已取餐</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">核销取餐凭证</view>
+    <view class="verify-row">
+      <input class="input code-input" maxlength="6" placeholder="输入6位取餐码" value="{{code}}" bindinput="onCode" />
+      <button class="btn verify-btn" bindtap="verify">核销</button>
+    </view>
+  </view>
+
+  <view class="section-title">订单处理</view>
+  <view class="card" wx:for="{{orders}}" wx:key="id">
+    <view class="row">
+      <view class="order-no">{{item.orderNo}}</view>
+      <text class="pill">{{item.status}}</text>
+    </view>
+    <view class="muted">{{item.summary}}</view>
+    <view class="row action-row">
+      <button class="btn secondary small" data-id="{{item.id}}" data-status="preparing" bindtap="changeStatus">备餐</button>
+      <button class="btn secondary small" data-id="{{item.id}}" data-status="ready" bindtap="changeStatus">出餐</button>
+      <button class="btn secondary small" data-id="{{item.id}}" data-status="delivering" bindtap="changeStatus">配送</button>
+    </view>
+  </view>
+
+  <view class="section-title">菜品管理</view>
+  <view class="card dish-row" wx:for="{{dishes}}" wx:key="id">
+    <view>
+      <view class="order-no">{{item.name}}</view>
+      <view class="muted">库存 {{item.stock}} · 评分 {{item.rating}}</view>
+    </view>
+    <switch checked="{{item.stock > 0}}" color="#0f5132" />
+  </view>
+</view>

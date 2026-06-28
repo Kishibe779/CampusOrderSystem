@@ -1,0 +1,27 @@
+.mt {
+  margin-top: 18rpx;
+}
+
+.default-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin: 20rpx 0;
+}
+
+.addr-name {
+  font-weight: 700;
+}
+
+.addr-detail {
+  margin: 10rpx 0 16rpx;
+  line-height: 1.5;
+}
+
+.small {
+  width: 160rpx;
+  height: 62rpx;
+  line-height: 62rpx;
+  font-size: 24rpx;
+  margin-left: 0;
+}
