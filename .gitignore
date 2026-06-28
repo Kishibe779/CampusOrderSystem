@@ -1,0 +1,7 @@
+task.docx
+task_extracted.txt
+task_render/
+work/
+deliverables/render_check/
+deliverables/*.inspect.ndjson
+*.log

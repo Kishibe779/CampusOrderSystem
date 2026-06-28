@@ -1,0 +1,9 @@
+{
+  "name": "campus-ordering-miniapp",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node tests/orderLogic.test.js",
+    "check": "node tools/check_structure.js"
+  }
+}
