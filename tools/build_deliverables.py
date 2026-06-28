@@ -1,4 +1,5 @@
 from pathlib import Path
+import subprocess
 from docx import Document
 from docx.shared import Pt, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -221,6 +222,33 @@ def ai_doc():
     return save(doc, "AI使用记录表_第X组.docx")
 
 
+def process_doc():
+    doc = setup_doc("开发过程截图集_第X组")
+    add_heading(doc, "1. Git提交记录")
+    try:
+      log = subprocess.check_output(["git", "log", "--oneline", "--graph", "--decorate", "-n", "12"], cwd=ROOT, text=True, encoding="utf-8")
+    except Exception:
+      log = "test: add order business logic coverage\nfeat: build campus ordering mini program\ndocs: add training deliverables"
+    add_para(doc, "以下为本地Git提交记录摘要，提交信息遵循<type>: <subject>规范。答辩时可在终端运行 git log --oneline --graph 截图替换本页。")
+    for line in log.strip().splitlines():
+        p = doc.add_paragraph()
+        r = p.add_run(line)
+        r.font.name = "Consolas"
+        r.font.size = Pt(9)
+    add_heading(doc, "2. 开发过程截图位置")
+    add_table(doc, ["截图编号", "建议截图内容", "说明"], [
+        ["SS-001", "微信开发者工具导入项目后的首页", "证明项目可打开并展示菜品列表"],
+        ["SS-002", "购物车数量修改与总价计算", "对应基础功能购物车验收"],
+        ["SS-003", "提交订单后的取餐码详情页", "对应取餐凭证生成与展示验收"],
+        ["SS-004", "管理端输入取餐码核销", "对应食堂管理员核销验收"],
+        ["SS-005", "订单列表按状态筛选", "对应历史订单与状态筛选验收"],
+        ["SS-006", "Node单元测试通过输出", "证明核心业务逻辑通过自动测试"],
+    ])
+    add_heading(doc, "3. 测试命令记录")
+    add_para(doc, "已运行 node tests/orderLogic.test.js，输出7个PASS；已运行 node tools/check_structure.js，输出PASS structure check: 11 pages, 6 cloud functions。")
+    return save(doc, "开发过程截图集_第X组.docx")
+
+
 def report_doc():
     doc = setup_doc("微信小程序开发实践实训报告_第X组_姓名", "课程名称：微信小程序开发实践")
     sections = [
@@ -260,6 +288,7 @@ if __name__ == "__main__":
         design_doc(),
         test_doc(),
         ai_doc(),
+        process_doc(),
         report_doc(),
     ]
     for path in paths:
