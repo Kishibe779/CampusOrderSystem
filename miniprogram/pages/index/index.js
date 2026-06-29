@@ -1,5 +1,19 @@
 const api = require('../../utils/api');
 
+const DISH_STYLE = {
+  d1: { emoji: '🍳', bg: 'linear-gradient(135deg, #fef3c7, #f59e0b)' },
+  d2: { emoji: '🍗', bg: 'linear-gradient(135deg, #fce7f3, #ec4899)' },
+  d3: { emoji: '🥗', bg: 'linear-gradient(135deg, #d1fae5, #10b981)' },
+  d4: { emoji: '🥤', bg: 'linear-gradient(135deg, #dbeafe, #3b82f6)' },
+  d5: { emoji: '🐟', bg: 'linear-gradient(135deg, #fee2e2, #ef4444)' },
+  d6: { emoji: '🍱', bg: 'linear-gradient(135deg, #ede9fe, #8b5cf6)' }
+};
+
+function enrichDish(dish) {
+  const style = DISH_STYLE[dish.id] || { emoji: '🍽️', bg: 'linear-gradient(135deg, #f1d59b, #e57f47)' };
+  return { ...dish, emoji: style.emoji, bg: style.bg };
+}
+
 Page({
   data: {
     categories: [],
@@ -12,7 +26,7 @@ Page({
   },
 
   onLoad() {
-    if (!wx.getStorageSync('user')) {
+    if (!getApp().globalData.user) {
       wx.redirectTo({ url: '/pages/login/login' });
       return;
     }
@@ -41,8 +55,11 @@ Page({
       keyword: this.data.keyword,
       page
     }).then((res) => {
-      const dishes = reset ? res.dishes : this.data.dishes.concat(res.dishes);
-      wx.setStorageSync('homeCache', { categories: res.categories, dishes, cachedAt: Date.now() });
+      if (!res || !res.ok) {
+        this.setData({ loading: false });
+        return;
+      }
+      const dishes = (reset ? res.dishes : this.data.dishes.concat(res.dishes)).map(enrichDish);
       this.setData({
         categories: res.categories,
         dishes,
@@ -69,7 +86,7 @@ Page({
     const existing = cart.find((item) => item.id === id);
     if (existing) existing.quantity += 1;
     else cart.push({ ...dish, quantity: 1 });
-    app.persist('cart', cart);
+    app.setCart(cart);
     wx.showToast({ title: '已加入购物车' });
   },
 

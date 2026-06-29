@@ -1,5 +1,6 @@
 <view class="page" wx:if="{{dish}}">
-  <view class="cover">{{dish.initial}}</view>
+  <image wx:if="{{dish.image && dish.image.length > 10}}" class="cover" src="{{dish.image}}" mode="aspectFill" />
+  <view wx:else class="cover" style="background:{{dish.bg}}">{{dish.emoji}}</view>
   <view class="card detail">
     <view class="row">
       <view class="name">{{dish.name}}</view>

@@ -72,14 +72,13 @@
   width: 154rpx;
   height: 154rpx;
   border-radius: 20rpx;
-  background: #f1d59b;
-  color: #7a3e12;
   font-size: 64rpx;
-  font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.08);
+  object-fit: cover;
 }
 
 .dish-info {

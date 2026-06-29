@@ -24,7 +24,8 @@
 
   <view class="section-title">推荐菜品</view>
   <view class="dish-card card" wx:for="{{dishes}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
-    <view class="dish-image">{{item.initial}}</view>
+    <image wx:if="{{item.image && item.image.length > 10}}" class="dish-image" src="{{item.image}}" mode="aspectFill" />
+    <view wx:else class="dish-image" style="background:{{item.bg}}">{{item.emoji}}</view>
     <view class="dish-info">
       <view class="row">
         <view class="dish-name">{{item.name}}</view>

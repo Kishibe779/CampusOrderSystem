@@ -16,10 +16,20 @@ exports.main = async (event) => {
     db.collection('dishes').where(where).skip((page - 1) * pageSize).limit(pageSize + 1).get()
   ]);
 
+  // 将 cloud:// 图片转为 https 临时链接
+  const result = dishes.data.slice(0, pageSize);
+  const cloudFiles = result.filter(d => d.image && d.image.startsWith('cloud://')).map(d => d.image);
+  if (cloudFiles.length) {
+    const tempRes = await cloud.getTempFileURL({ fileList: [...new Set(cloudFiles)] });
+    const urlMap = {};
+    tempRes.fileList.forEach(f => { urlMap[f.fileID] = f.tempFileURL || ''; });
+    result.forEach(d => { if (urlMap[d.image]) d.image = urlMap[d.image]; });
+  }
+
   return {
     ok: true,
     categories: [{ id: 'all', name: '全部' }].concat(categories.data),
-    dishes: dishes.data.slice(0, pageSize),
+    dishes: result,
     hasMore: dishes.data.length > pageSize
   };
 };

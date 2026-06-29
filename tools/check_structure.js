@@ -15,10 +15,17 @@ for (const page of appJson.pages) {
 const requiredFunctions = [
   'login',
   'getDishes',
+  'getDish',
+  'getAddresses',
+  'saveAddress',
   'placeOrder',
+  'listOrders',
+  'getOrder',
   'verifyPickupCode',
   'updateOrderStatus',
-  'submitReview'
+  'submitReview',
+  'initDB',
+  'updateDishImages'
 ];
 
 for (const name of requiredFunctions) {

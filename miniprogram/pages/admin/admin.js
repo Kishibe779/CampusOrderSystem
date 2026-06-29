@@ -1,11 +1,10 @@
 const api = require('../../utils/api');
-const seed = require('../../utils/seed');
 
 Page({
   data: {
     code: '',
     orders: [],
-    dishes: seed.dishes,
+    dishes: [],
     stats: { orderCount: 0, amount: 0, pickupCount: 0 }
   },
 
@@ -14,10 +13,17 @@ Page({
   },
 
   load() {
-    api.listOrders('all').then((orders) => {
+    Promise.all([
+      api.listOrders('all'),
+      api.getDishes({ pageSize: 99 })
+    ]).then(([orders, dishesRes]) => {
       const amount = orders.reduce((sum, order) => sum + Number(order.totalAmount || 0), 0).toFixed(2);
       const pickupCount = orders.filter((order) => ['ready', 'picked'].includes(order.status)).length;
-      this.setData({ orders, stats: { orderCount: orders.length, amount, pickupCount } });
+      this.setData({
+        orders,
+        dishes: dishesRes.dishes || [],
+        stats: { orderCount: orders.length, amount, pickupCount }
+      });
     });
   },
 

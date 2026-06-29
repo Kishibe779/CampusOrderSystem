@@ -20,9 +20,26 @@
   height: 58rpx;
   line-height: 58rpx;
   padding: 0;
+  margin: 0;
   border-radius: 50%;
   background: #e7f2eb;
   color: #0f5132;
+  font-size: 28rpx;
+  font-weight: 600;
+  border: none;
+  min-width: 58rpx;
+  box-sizing: border-box;
+}
+
+.counter-btn::after {
+  border: none;
+}
+
+.quantity-text {
+  font-size: 32rpx;
+  font-weight: 700;
+  min-width: 40rpx;
+  text-align: center;
 }
 
 .summary {

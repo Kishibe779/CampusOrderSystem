@@ -53,13 +53,19 @@ exports.main = async (event) => {
   try {
     if (order.orderType !== 'group') {
       for (const item of items) {
-        const dishRef = tx.collection('dishes').doc(item.id);
-        const dish = await dishRef.get();
-        if (!dish.data || Number(dish.data.stock || 0) < Number(item.quantity || 0)) {
+        const dishRes = await tx.collection('dishes').where({ id: item.id }).get();
+        if (!dishRes.data.length) {
           await tx.rollback();
-          return { ok: false, message: `${item.name}库存不足` };
+          return { ok: false, message: `${item.id} 菜品不存在` };
         }
-        await dishRef.update({ data: { stock: _.inc(-Number(item.quantity || 0)), sales: _.inc(Number(item.quantity || 0)) } });
+        const dish = dishRes.data[0];
+        if (Number(dish.stock || 0) < Number(item.quantity || 0)) {
+          await tx.rollback();
+          return { ok: false, message: `${dish.name || item.id}库存不足` };
+        }
+        await tx.collection('dishes').doc(dish._id).update({
+          data: { stock: _.inc(-Number(item.quantity || 0)), sales: _.inc(Number(item.quantity || 0)) }
+        });
       }
     }
     const res = await tx.collection('orders').add({ data: order });

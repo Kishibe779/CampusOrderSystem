@@ -16,7 +16,7 @@ Page({
   },
 
   save(cart) {
-    getApp().persist('cart', cart);
+    getApp().setCart(cart);
     this.sync();
   },
 

@@ -16,9 +16,18 @@ Page({
   },
 
   login() {
-    api.login({ role: this.data.role, nickName: '校园用户' }).then(() => {
-      wx.showToast({ title: '登录成功' });
-      wx.switchTab({ url: '/pages/index/index' });
+    wx.showLoading({ title: '登录中' });
+    api.login({ role: this.data.role, nickName: '校园用户' }).then((res) => {
+      wx.hideLoading();
+      if (res && res.ok) {
+        wx.showToast({ title: '登录成功', icon: 'success' });
+        setTimeout(() => wx.switchTab({ url: '/pages/index/index' }), 800);
+      } else {
+        wx.showToast({ title: (res && res.message) || '登录失败', icon: 'none' });
+      }
+    }).catch((err) => {
+      wx.hideLoading();
+      wx.showToast({ title: '网络异常，请检查云开发环境', icon: 'none' });
     });
   }
 });

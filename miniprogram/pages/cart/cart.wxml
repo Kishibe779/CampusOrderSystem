@@ -7,9 +7,9 @@
         <view class="price">¥{{item.price}}</view>
       </view>
       <view class="counter">
-        <button class="counter-btn" data-id="{{item.id}}" bindtap="minus">-</button>
-        <text>{{item.quantity}}</text>
-        <button class="counter-btn" data-id="{{item.id}}" bindtap="plus">+</button>
+        <button class="counter-btn" size="mini" data-id="{{item.id}}" bindtap="minus">-</button>
+        <text class="quantity-text">{{item.quantity}}</text>
+        <button class="counter-btn" size="mini" data-id="{{item.id}}" bindtap="plus">+</button>
       </view>
     </view>
     <view class="summary card">
