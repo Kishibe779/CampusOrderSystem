@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding-bottom: 60rpx;
 }
 
 .brand {
@@ -30,6 +31,63 @@
 .subtitle {
   color: #667085;
   margin-top: 16rpx;
+}
+
+.avatar-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0 auto 28rpx;
+  line-height: 1;
+}
+.avatar-btn::after { border: none; }
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: #e5e7eb;
+}
+
+.avatar-placeholder {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 52rpx;
+  color: #9ca3af;
+}
+
+.avatar-hint {
+  color: #667085;
+  font-size: 24rpx;
+}
+
+.nick-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 16rpx 0;
+  border-top: 1rpx solid #f0ece0;
+}
+
+.nick-label {
+  font-weight: 700;
+  flex-shrink: 0;
+  width: 80rpx;
+}
+
+.nick-input {
+  flex: 1;
+  font-size: 28rpx;
+  padding: 12rpx 0;
 }
 
 .role {

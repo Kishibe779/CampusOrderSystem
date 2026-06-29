@@ -2,11 +2,24 @@
   <view class="brand">
     <view class="logo">餐</view>
     <view class="title">校园点餐系统</view>
-    <view class="subtitle">微信授权登录后，可点餐、预约、查看取餐凭证</view>
+    <view class="subtitle">设置头像昵称后，即可点餐、预约、查看取餐凭证</view>
+  </view>
+
+  <view class="card profile-card">
+    <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+      <image class="avatar" wx:if="{{avatarUrl}}" src="{{avatarUrl}}" mode="aspectFill" />
+      <view class="avatar-placeholder" wx:else>👤</view>
+      <view class="avatar-hint">{{avatarUrl ? '点击换头像' : '点击获取头像'}}</view>
+    </button>
+
+    <view class="nick-input-wrap">
+      <text class="nick-label">昵称</text>
+      <input class="nick-input" type="nickname" placeholder="点击输入微信昵称" value="{{nickName}}" bindinput="onNickInput" />
+    </view>
   </view>
 
   <view class="card role-card">
-    <view class="section-title">选择演示角色</view>
+    <view class="section-title">选择角色</view>
     <radio-group bindchange="onRoleChange">
       <label class="role" wx:for="{{roles}}" wx:key="value">
         <radio value="{{item.value}}" checked="{{role === item.value}}" color="#0f5132" />
@@ -18,5 +31,5 @@
     </radio-group>
   </view>
 
-  <button class="btn login-btn" bindtap="login">微信授权登录</button>
+  <button class="btn login-btn" bindtap="login">登录</button>
 </view>
