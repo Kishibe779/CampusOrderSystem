@@ -1,4 +1,5 @@
 const api = require('../../utils/api');
+const { requireLogin } = require('../../utils/role');
 
 const DISH_STYLE = {
   d1: { emoji: '🍳', bg: 'linear-gradient(135deg, #fef3c7, #f59e0b)' },
@@ -17,23 +18,51 @@ function enrichDish(dish) {
 
 Page({
   data: {
-    dish: null
+    dish: null,
+    cartQty: 0
   },
 
   onLoad(query) {
+    if (!requireLogin()) return;
     api.getDish(query.id).then((dish) => {
       if (!dish) { wx.showToast({ title: '菜品不存在', icon: 'none' }); return; }
       this.setData({ dish: enrichDish(dish) });
+      this.syncCartQty(dish.id);
     });
   },
 
+  onShow() {
+    if (this.data.dish) {
+      this.syncCartQty(this.data.dish.id);
+    }
+  },
+
+  syncCartQty(dishId) {
+    var cart = getApp().globalData.cart || [];
+    var item = cart.find(function (i) { return i.id === dishId; });
+    this.setData({ cartQty: item ? item.quantity : 0 });
+  },
+
   addCart() {
-    const app = getApp();
-    const cart = app.globalData.cart || [];
-    const existing = cart.find((item) => item.id === this.data.dish.id);
+    var dish = this.data.dish;
+    var app = getApp();
+    var cart = app.globalData.cart || [];
+    var existing = cart.find(function (item) { return item.id === dish.id; });
     if (existing) existing.quantity += 1;
-    else cart.push({ ...this.data.dish, quantity: 1 });
+    else cart.push({ id: dish.id, name: dish.name, price: dish.price, quantity: 1 });
     app.setCart(cart);
-    wx.showToast({ title: '已加入购物车' });
+    api.syncCart(cart);
+    this.syncCartQty(dish.id);
+  },
+
+  minusCart() {
+    var dish = this.data.dish;
+    var app = getApp();
+    var cart = (app.globalData.cart || []).map(function (item) {
+      return item.id === dish.id ? Object.assign({}, item, { quantity: item.quantity - 1 }) : item;
+    }).filter(function (item) { return item.quantity > 0; });
+    app.setCart(cart);
+    api.syncCart(cart);
+    this.syncCartQty(dish.id);
   }
 });

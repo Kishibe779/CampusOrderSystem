@@ -21,7 +21,9 @@
 
 .group-btn {
   width: 140rpx;
-  color: #0f5132;
+  background: rgba(255,255,255,0.18) !important;
+  color: #fff !important;
+  border: 1rpx solid rgba(255,255,255,0.3) !important;
 }
 
 .search-bar {
@@ -110,4 +112,30 @@
   line-height: 60rpx;
   font-size: 24rpx;
   padding: 0;
+}
+
+.cart-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.qty-btn {
+  width: 52rpx;
+  height: 52rpx;
+  line-height: 52rpx;
+  border-radius: 50%;
+  background: #e7f2eb;
+  color: #0f5132;
+  font-size: 28rpx;
+  font-weight: 700;
+  text-align: center;
+}
+
+.qty-num {
+  min-width: 44rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #0f5132;
 }

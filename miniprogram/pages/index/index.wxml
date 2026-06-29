@@ -4,7 +4,7 @@
       <view class="hero-title">今天想吃什么？</view>
       <view class="hero-subtitle">支持即时点餐、预约自取、送餐和团餐预订</view>
     </view>
-    <button class="btn secondary group-btn" bindtap="goGroup">团餐</button>
+    <button wx:if="{{role !== 'admin'}}" class="btn secondary group-btn" bindtap="goGroup">团餐</button>
   </view>
 
   <view class="search-bar">
@@ -24,7 +24,7 @@
 
   <view class="section-title">推荐菜品</view>
   <view class="dish-card card" wx:for="{{dishes}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
-    <image wx:if="{{item.image && item.image.length > 10}}" class="dish-image" src="{{item.image}}" mode="aspectFill" />
+    <image wx:if="{{item.image}}" class="dish-image" src="{{item.image}}" mode="aspectFill" />
     <view wx:else class="dish-image" style="background:{{item.bg}}">{{item.emoji}}</view>
     <view class="dish-info">
       <view class="row">
@@ -38,9 +38,14 @@
         </view>
         <view class="muted">评分 {{item.rating}} · 月售 {{item.sales}}</view>
       </view>
-      <view class="row stock-row">
+      <view class="row stock-row" wx:if="{{role !== 'admin'}}">
         <view class="muted">库存 {{item.stock}}</view>
-        <button class="btn add-btn" catchtap="addCart" data-id="{{item.id}}">加购物车</button>
+        <view class="cart-ctrl" wx:if="{{item.cartQty > 0}}">
+          <view class="qty-btn" catchtap="minusCart" data-id="{{item.id}}">-</view>
+          <text class="qty-num">{{item.cartQty}}</text>
+          <view class="qty-btn" catchtap="addCart" data-id="{{item.id}}">+</view>
+        </view>
+        <button wx:else class="btn add-btn" catchtap="addCart" data-id="{{item.id}}">加购物车</button>
       </view>
     </view>
   </view>

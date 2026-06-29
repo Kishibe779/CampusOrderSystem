@@ -1,4 +1,5 @@
 const api = require('../../utils/api');
+const { requireLogin, getRole } = require('../../utils/role');
 
 const DISH_STYLE = {
   d1: { emoji: '🍳', bg: 'linear-gradient(135deg, #fef3c7, #f59e0b)' },
@@ -14,8 +15,18 @@ function enrichDish(dish) {
   return { ...dish, emoji: style.emoji, bg: style.bg };
 }
 
+function mergeCartQty(dishes) {
+  var cart = getApp().globalData.cart || [];
+  var cartMap = {};
+  cart.forEach(function (item) { cartMap[item.id] = item.quantity; });
+  return dishes.map(function (dish) {
+    return Object.assign({}, dish, { cartQty: cartMap[dish.id] || 0 });
+  });
+}
+
 Page({
   data: {
+    role: '',
     categories: [],
     dishes: [],
     activeCategory: 'all',
@@ -25,10 +36,32 @@ Page({
     loading: false
   },
 
+  onShow() {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 0 });
+    }
+    // 从其他页面回来时刷新购物车数量
+    this.syncCartQty();
+  },
+
   onLoad() {
-    if (!getApp().globalData.user) {
-      wx.redirectTo({ url: '/pages/login/login' });
-      return;
+    if (!requireLogin()) return;
+    this.setData({ role: getRole() });
+    var cache = getApp().globalData.homeCache;
+    if (!cache || Date.now() - cache.time >= 5 * 60 * 1000) {
+      try {
+        var stored = wx.getStorageSync('homeCache');
+        if (stored && Date.now() - stored.time < 5 * 60 * 1000) {
+          cache = stored;
+          getApp().globalData.homeCache = cache;
+        }
+      } catch (e) { /* ignore */ }
+    }
+    if (cache && Date.now() - cache.time < 5 * 60 * 1000) {
+      this.setData({
+        categories: cache.categories,
+        dishes: mergeCartQty(cache.dishes.map(enrichDish))
+      });
     }
     this.loadDishes(true);
   },
@@ -59,15 +92,28 @@ Page({
         this.setData({ loading: false });
         return;
       }
-      const dishes = (reset ? res.dishes : this.data.dishes.concat(res.dishes)).map(enrichDish);
+      var dishes = (reset ? res.dishes : this.data.dishes.concat(res.dishes)).map(enrichDish);
+      dishes = mergeCartQty(dishes);
+      if (reset && !this.data.keyword && this.data.activeCategory === 'all') {
+        var cacheData = { categories: res.categories, dishes: res.dishes, time: Date.now() };
+        getApp().globalData.homeCache = cacheData;
+        wx.setStorageSync('homeCache', cacheData);
+      }
       this.setData({
         categories: res.categories,
-        dishes,
+        dishes: dishes,
         page: page + 1,
         hasMore: res.hasMore,
         loading: false
       });
     });
+  },
+
+  syncCartQty() {
+    this.setData({ dishes: mergeCartQty(this.data.dishes) });
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().updateCartCount();
+    }
   },
 
   onKeyword(event) {
@@ -78,20 +124,32 @@ Page({
     this.setData({ activeCategory: event.currentTarget.dataset.id }, () => this.refresh());
   },
 
-  addCart(event) {
-    const id = event.currentTarget.dataset.id;
-    const dish = this.data.dishes.find((item) => item.id === id);
-    const app = getApp();
-    const cart = app.globalData.cart || [];
-    const existing = cart.find((item) => item.id === id);
+  addCart(e) {
+    var id = e.currentTarget.dataset.id;
+    var dish = this.data.dishes.find(function (item) { return item.id === id; });
+    var app = getApp();
+    var cart = app.globalData.cart || [];
+    var existing = cart.find(function (item) { return item.id === id; });
     if (existing) existing.quantity += 1;
-    else cart.push({ ...dish, quantity: 1 });
+    else cart.push({ id: dish.id, name: dish.name, price: dish.price, quantity: 1 });
     app.setCart(cart);
-    wx.showToast({ title: '已加入购物车' });
+    api.syncCart(cart);
+    this.syncCartQty();
+  },
+
+  minusCart(e) {
+    var id = e.currentTarget.dataset.id;
+    var app = getApp();
+    var cart = (app.globalData.cart || []).map(function (item) {
+      return item.id === id ? Object.assign({}, item, { quantity: item.quantity - 1 }) : item;
+    }).filter(function (item) { return item.quantity > 0; });
+    app.setCart(cart);
+    api.syncCart(cart);
+    this.syncCartQty();
   },
 
   goDetail(event) {
-    wx.navigateTo({ url: `/pages/detail/detail?id=${event.currentTarget.dataset.id}` });
+    wx.navigateTo({ url: '/pages/detail/detail?id=' + event.currentTarget.dataset.id });
   },
 
   goGroup() {

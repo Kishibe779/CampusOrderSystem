@@ -1,5 +1,5 @@
 <view class="page" wx:if="{{dish}}">
-  <image wx:if="{{dish.image && dish.image.length > 10}}" class="cover" src="{{dish.image}}" mode="aspectFill" />
+  <image wx:if="{{dish.image}}" class="cover" src="{{dish.image}}" mode="aspectFill" />
   <view wx:else class="cover" style="background:{{dish.bg}}">{{dish.emoji}}</view>
   <view class="card detail">
     <view class="row">
@@ -17,5 +17,10 @@
     <view class="section-title">营养提示</view>
     <view class="body">{{dish.nutrition}}</view>
   </view>
-  <button class="btn fixed" bindtap="addCart">加入购物车</button>
+  <view class="fixed cart-bottom" wx:if="{{cartQty > 0}}">
+    <view class="qty-btn" bindtap="minusCart">-</view>
+    <text class="qty-num">{{cartQty}}</text>
+    <view class="qty-btn" bindtap="addCart">+</view>
+  </view>
+  <button wx:else class="btn fixed" bindtap="addCart">加入购物车</button>
 </view>
