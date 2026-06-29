@@ -1,0 +1,9 @@
+{
+  "name": "getCart",
+  "version": "1.0.0",
+  "description": "从云数据库获取购物车",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}
