@@ -91,10 +91,53 @@ function verifyPickupCode(code) {
   return callCloud('verifyPickupCode', { code });
 }
 
+function payOrder(orderId) {
+  return callCloud('payOrder', { orderId }).then((res) => {
+    if (res.ok) {
+      getApp().globalData.cart = [];
+    }
+    return res;
+  });
+}
+
+// ========== 购物车 ==========
+
+function syncCart(items) {
+  return callCloud('syncCart', { items }).then((res) => {
+    if (res.ok) {
+      getApp().globalData.cart = items;
+    }
+    return res;
+  });
+}
+
+function getCart() {
+  return callCloud('getCart', {}).then((res) => {
+    const items = res.ok ? res.items : [];
+    getApp().globalData.cart = items;
+    return items;
+  });
+}
+
 // ========== 评价 ==========
 
 function submitReview(payload) {
   return callCloud('submitReview', payload);
+}
+
+function toggleDish(id, onSale) {
+  return callCloud('toggleDish', { id, onSale });
+}
+
+function manageDish(payload) {
+  return callCloud('manageDish', payload);
+}
+
+function uploadDishImage(filePath) {
+  return wx.cloud.uploadFile({
+    cloudPath: 'dishes/' + Date.now() + '.jpg',
+    filePath: filePath
+  });
 }
 
 module.exports = {
@@ -108,5 +151,11 @@ module.exports = {
   getOrder,
   updateOrderStatus,
   verifyPickupCode,
-  submitReview
+  payOrder,
+  submitReview,
+  toggleDish,
+  manageDish,
+  uploadDishImage,
+  syncCart,
+  getCart
 };

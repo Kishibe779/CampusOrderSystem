@@ -3,7 +3,8 @@ App({
     user: null,
     cart: [],
     addresses: [],
-    orders: []
+    orders: [],
+    homeCache: null
   },
 
   onLaunch() {
@@ -18,5 +19,15 @@ App({
 
   setUser(user) {
     this.globalData.user = user;
+  },
+
+  logout() {
+    this.globalData.user = null;
+    this.globalData.cart = [];
+    this.globalData.addresses = [];
+    this.globalData.orders = [];
+    this.globalData.homeCache = null;
+    wx.clearStorageSync();
+    wx.reLaunch({ url: '/pages/login/login' });
   }
 });

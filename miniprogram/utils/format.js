@@ -15,6 +15,7 @@ function statusText(status) {
     preparing: '备餐中',
     ready: '待取餐',
     delivering: '配送中',
+    delivered: '已送达',
     picked: '已取餐',
     completed: '已完成',
     cancelled: '已取消'

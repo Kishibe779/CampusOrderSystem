@@ -8,6 +8,7 @@ page {
 
 .page {
   padding: 28rpx;
+  padding-bottom: calc(28rpx + 100rpx + env(safe-area-inset-bottom));
   box-sizing: border-box;
 }
 
