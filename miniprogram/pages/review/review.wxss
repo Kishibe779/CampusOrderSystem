@@ -1,3 +1,71 @@
+.stars {
+  display: flex;
+  gap: 10rpx;
+  margin-bottom: 28rpx;
+}
+.star {
+  font-size: 56rpx;
+}
 .textarea {
+  width: 100%;
+  min-height: 160rpx;
+  padding: 12rpx 0;
+  font-size: 28rpx;
   margin-top: 22rpx;
+  border-top: 1rpx solid #f0ece0;
+}
+
+.image-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-top: 12rpx;
+}
+
+.image-item {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 12rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.upload-img {
+  width: 100%;
+  height: 100%;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 2rpx;
+  right: 2rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  font-size: 22rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-btn {
+  border: 2rpx dashed #ccc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fafafa;
+}
+
+.add-icon {
+  font-size: 48rpx;
+  color: #999;
+}
+
+.add-text {
+  font-size: 20rpx;
+  color: #999;
+  margin-top: 4rpx;
 }

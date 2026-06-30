@@ -1,8 +1,25 @@
 <view class="page">
   <view class="card">
     <view class="section-title">评分</view>
-    <slider min="1" max="5" step="1" value="{{rating}}" show-value activeColor="#0f5132" bindchange="onRating" />
+    <view class="stars">
+      <text class="star" wx:for="{{[1,2,3,4,5]}}" wx:key="*this" data-value="{{item}}" bindtap="onStar">{{item <= rating ? '⭐' : '☆'}}</text>
+    </view>
     <textarea class="textarea" placeholder="写下菜品口味、出餐速度、配送体验" value="{{content}}" bindinput="onContent"></textarea>
   </view>
+
+  <view class="card">
+    <view class="section-title">晒图（选填）</view>
+    <view class="image-grid">
+      <view class="image-item" wx:for="{{images}}" wx:key="*this">
+        <image class="upload-img" src="{{item}}" mode="aspectFill" />
+        <view class="remove-btn" data-index="{{index}}" bindtap="removeImage">✕</view>
+      </view>
+      <view class="image-item add-btn" wx:if="{{images.length < 3}}" bindtap="chooseImage">
+        <text class="add-icon">+</text>
+        <text class="add-text">{{uploading ? '上传中' : '添加图片'}}</text>
+      </view>
+    </view>
+  </view>
+
   <button class="btn" bindtap="submit">提交评价</button>
 </view>

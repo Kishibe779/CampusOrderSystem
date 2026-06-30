@@ -1,3 +1,4 @@
 {
-  "navigationBarTitleText": "食堂管理"
+  "navigationBarTitleText": "食堂管理",
+  "enablePullDownRefresh": true
 }

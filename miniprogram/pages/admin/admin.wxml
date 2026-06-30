@@ -1,19 +1,12 @@
 <view class="page">
+  <!-- 统计 -->
   <view class="card stats">
-    <view>
-      <view class="stat-num">{{stats.orderCount}}</view>
-      <view class="muted">订单数</view>
-    </view>
-    <view>
-      <view class="stat-num">¥{{stats.amount}}</view>
-      <view class="muted">销售额</view>
-    </view>
-    <view>
-      <view class="stat-num">{{stats.pickupCount}}</view>
-      <view class="muted">待/已取餐</view>
-    </view>
+    <view><view class="stat-num">{{stats.orderCount}}</view><view class="muted">订单数</view></view>
+    <view><view class="stat-num">¥{{stats.amount}}</view><view class="muted">销售额</view></view>
+    <view><view class="stat-num">{{stats.pickupCount}}</view><view class="muted">待/已取餐</view></view>
   </view>
 
+  <!-- 核销 -->
   <view class="card">
     <view class="section-title">核销取餐凭证</view>
     <view class="verify-row">
@@ -22,26 +15,69 @@
     </view>
   </view>
 
+  <!-- 订单处理 -->
   <view class="section-title">订单处理</view>
-  <view class="card" wx:for="{{orders}}" wx:key="id">
+  <view class="empty" wx:if="{{orders.length === 0}}">暂无订单</view>
+  <view class="card" wx:for="{{orders}}" wx:for-item="order" wx:key="id">
     <view class="row">
-      <view class="order-no">{{item.orderNo}}</view>
-      <text class="pill">{{item.status}}</text>
+      <view>
+        <view class="order-no">{{order.orderNo}}</view>
+        <text class="muted" style="font-size:22rpx">{{order.orderType === 'delivery' ? '送餐' : order.orderType === 'group' ? '团餐' : '自取'}}</text>
+      </view>
+      <text class="pill">{{order.statusLabel}}</text>
     </view>
-    <view class="muted">{{item.summary}}</view>
-    <view class="row action-row">
-      <button class="btn secondary small" data-id="{{item.id}}" data-status="preparing" bindtap="changeStatus">备餐</button>
-      <button class="btn secondary small" data-id="{{item.id}}" data-status="ready" bindtap="changeStatus">出餐</button>
-      <button class="btn secondary small" data-id="{{item.id}}" data-status="delivering" bindtap="changeStatus">配送</button>
+    <view class="muted" style="margin-top:8rpx">{{order.summary}}</view>
+    <view class="row action-row" wx:if="{{order.actions.length}}">
+      <button wx:for="{{order.actions}}" wx:for-item="act" wx:key="status" class="btn secondary small" data-id="{{order.id}}" data-status="{{act.status}}" bindtap="changeStatus">{{act.label}}</button>
     </view>
   </view>
 
-  <view class="section-title">菜品管理</view>
+  <!-- 菜品管理 -->
+  <view class="section-title row" style="margin-bottom:0">
+    <text>菜品管理</text>
+    <button class="btn secondary small" style="width:160rpx" bindtap="addDish">+ 添加菜品</button>
+  </view>
   <view class="card dish-row" wx:for="{{dishes}}" wx:key="id">
-    <view>
+    <image wx:if="{{item.image}}" class="dish-thumb" src="{{item.image}}" mode="aspectFill" />
+    <view wx:else class="dish-thumb dish-thumb-placeholder">🍽️</view>
+    <view class="dish-meta">
       <view class="order-no">{{item.name}}</view>
-      <view class="muted">库存 {{item.stock}} · 评分 {{item.rating}}</view>
+      <view class="muted">¥{{item.price}} · 库存{{item.stock}} · {{item.categoryId}}</view>
     </view>
-    <switch checked="{{item.stock > 0}}" color="#0f5132" />
+    <view class="dish-actions">
+      <switch checked="{{item.onSale !== false}}" color="#0f5132" data-id="{{item.id}}" bindchange="toggleDish" style="transform:scale(0.7)" />
+      <button class="btn secondary small" style="width:80rpx;height:48rpx;line-height:48rpx;margin:0" data-id="{{item.id}}" bindtap="editDish">编辑</button>
+      <button class="btn secondary small" style="width:80rpx;height:48rpx;line-height:48rpx;margin:0;color:#dc2626;border-color:#fecaca" data-id="{{item.id}}" bindtap="deleteDish">删除</button>
+    </view>
+  </view>
+
+  <!-- 菜品表单弹窗 -->
+  <view class="modal" wx:if="{{showDishForm}}" catchtap="closeForm">
+    <view class="modal-content" catchtap="">
+      <view class="section-title">{{editingDish ? '编辑菜品' : '添加菜品'}}</view>
+
+      <view class="dish-img-upload" bindtap="chooseDishImage">
+        <image wx:if="{{dishForm.image}}" class="upload-preview" src="{{dishForm.image}}" mode="aspectFill" />
+        <view wx:else class="upload-placeholder">+ 点击上传图片</view>
+      </view>
+      <view class="muted" wx:if="{{uploading}}" style="text-align:center;margin-bottom:12rpx">上传中...</view>
+
+      <input class="input" placeholder="菜品名称" value="{{dishForm.name}}" data-field="name" bindinput="onDishField" />
+      <view class="form-row">
+        <input class="input half" type="digit" placeholder="价格" value="{{dishForm.price}}" data-field="price" bindinput="onDishField" />
+        <input class="input half" type="number" placeholder="库存" value="{{dishForm.stock}}" data-field="stock" bindinput="onDishField" />
+      </view>
+      <view class="form-row cats">
+        <view wx:for="{{categories}}" wx:key="id" class="cat-tag {{dishForm.categoryId === item.id ? 'active' : ''}}" data-field="categoryId" data-value="{{item.id}}" bindtap="onDishField">{{item.name}}</view>
+      </view>
+      <input class="input" placeholder="描述" value="{{dishForm.desc}}" data-field="desc" bindinput="onDishField" />
+      <input class="input" placeholder="配料" value="{{dishForm.ingredients}}" data-field="ingredients" bindinput="onDishField" />
+      <input class="input" placeholder="营养信息" value="{{dishForm.nutrition}}" data-field="nutrition" bindinput="onDishField" />
+
+      <view class="form-btns">
+        <button class="btn secondary" style="flex:1" bindtap="closeForm">取消</button>
+        <button class="btn" style="flex:1" bindtap="submitDish">{{editingDish ? '保存' : '添加'}}</button>
+      </view>
+    </view>
   </view>
 </view>
