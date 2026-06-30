@@ -1,4 +1,13 @@
 <view class="page">
+  <view class="user-card card" wx:if="{{user}}">
+    <image class="avatar" src="{{user.avatarUrl}}" mode="aspectFill" />
+    <view class="user-info">
+      <view class="nick">{{user.nickName}}</view>
+      <view class="muted">{{roleName}}</view>
+    </view>
+    <button class="logout-btn" size="mini" bindtap="logout">退出</button>
+  </view>
+
   <scroll-view scroll-x class="status-tabs">
     <view wx:for="{{tabs}}" wx:key="value" class="tab {{status === item.value ? 'active' : ''}}" data-value="{{item.value}}" bindtap="changeStatus">{{item.label}}</view>
   </scroll-view>

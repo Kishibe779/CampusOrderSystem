@@ -1,3 +1,38 @@
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 22rpx;
+}
+
+.avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: #e5e7eb;
+  flex-shrink: 0;
+}
+
+.user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.nick {
+  font-weight: 700;
+  font-size: 30rpx;
+}
+
+.logout-btn {
+  flex-shrink: 0;
+  background: #fff;
+  color: #dc2626;
+  border: 1rpx solid #fecaca;
+  border-radius: 999rpx;
+  padding: 0 22rpx;
+  font-size: 24rpx;
+}
+
 .status-tabs {
   white-space: nowrap;
   margin-bottom: 22rpx;

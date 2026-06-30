@@ -1,18 +1,32 @@
-<view class="page" wx:if="{{order}}">
-  <view class="card">
+<view class="page theme-{{theme}}" wx:if="{{order}}">
+  <view class="card order-header">
     <view class="row">
-      <view class="order-title">{{order.orderNo}}</view>
-      <text class="pill">{{statusLabel}}</text>
+      <view>
+        <view class="order-no">{{order.orderNo}}</view>
+        <text class="type-tag">{{order.orderType === 'delivery' ? '🚀 送餐' : order.orderType === 'group' ? '👥 团餐' : '🏠 自取'}}</text>
+      </view>
+      <text class="pill status-pill">{{statusLabel}}</text>
     </view>
-    <view class="muted">创建时间：{{order.createdAt}}</view>
+    <view class="muted" style="margin-top:8rpx">{{order.createdAt}}</view>
   </view>
 
-  <view class="card pickup" wx:if="{{order.pickupCode}}">
-    <view class="muted">取餐凭证</view>
-    <view class="pickup-code">{{order.pickupCode}}</view>
-    <view class="muted">到窗口出示此码，管理员核销后状态更新为已取餐</view>
+  <!-- 自取：取餐码 -->
+  <view class="card code-card" wx:if="{{order.pickupCode}}">
+    <view class="code-label">取餐码</view>
+    <view class="code-value">{{order.pickupCode}}</view>
+    <view class="code-tip">到食堂窗口出示给管理员核销</view>
   </view>
 
+  <!-- 自取待取餐提示 -->
+  <view class="card hint-card" wx:if="{{order.orderType !== 'delivery' && order.status === 'ready'}}">
+    <text class="hint-icon">📢</text>
+    <view>
+      <view class="hint-title">餐品已备好，请取餐</view>
+      <view class="muted">前往食堂窗口出示取餐码，管理员核销后即可取餐</view>
+    </view>
+  </view>
+
+  <!-- 订单明细 -->
   <view class="card">
     <view class="section-title">订单明细</view>
     <view class="row line" wx:for="{{order.items}}" wx:key="id">
@@ -25,25 +39,41 @@
     </view>
   </view>
 
-  <view class="card" wx:if="{{order.orderType === 'delivery'}}">
-    <view class="section-title">送餐信息</view>
-    <view>{{order.address.name}} {{order.address.phone}}</view>
+  <!-- 送餐地址 -->
+  <view class="card" wx:if="{{order.orderType === 'delivery' && order.address}}">
+    <view class="section-title">送餐地址</view>
+    <view class="addr-line">{{order.address.name}}  {{order.address.phone}}</view>
     <view class="muted">{{order.address.detail}}</view>
-    <button wx:if="{{order.status === 'delivering'}}" class="btn" bindtap="confirmReceive">确认收货</button>
   </view>
 
-  <view class="card">
-    <view class="section-title">状态时间线</view>
-    <view class="timeline-item" wx:for="{{order.timeline}}" wx:key="index">
-      <view class="dot"></view>
-      <view>{{item.text}}</view>
+  <!-- 进度条 -->
+  <view class="card" wx:if="{{showProgress}}">
+    <view class="section-title">订单进度</view>
+    <view class="timeline">
+      <view class="tl-item {{activeStep >= index ? 'done' : ''}}" wx:for="{{steps}}" wx:key="status">
+        <view class="tl-left">
+          <view class="tl-dot">{{activeStep >= index ? '✓' : ''}}</view>
+          <view class="tl-line" wx:if="{{index < steps.length - 1}}"></view>
+        </view>
+        <view class="tl-text">
+          <view class="tl-label">{{item.label}}</view>
+          <view class="tl-time muted" wx:if="{{activeStep >= index}}">{{index === 0 ? '已完成' : index <= activeStep ? '已完成' : ''}}</view>
+        </view>
+      </view>
     </view>
   </view>
 
-  <view class="card receipt">
+  <!-- 电子小票 -->
+  <view class="card receipt" wx:if="{{order.status !== 'cancelled' && order.status !== 'unpaid'}}">
     <view class="section-title">电子小票</view>
     <text selectable>{{receipt}}</text>
   </view>
 
-  <button wx:if="{{order.status === 'completed' || order.status === 'picked'}}" class="btn secondary" bindtap="goReview">评价订单</button>
+  <!-- 操作按钮区 -->
+  <view class="actions">
+    <button wx:if="{{order.status === 'unpaid' || order.status === 'paid'}}" class="btn cancel-btn" bindtap="cancelOrder">取消订单</button>
+    <button wx:if="{{order.status === 'delivered'}}" class="btn" bindtap="confirmReceive">确认收货</button>
+    <button wx:if="{{order.orderType !== 'delivery' && order.status === 'picked'}}" class="btn" bindtap="confirmReceive">确认已取餐</button>
+    <button wx:if="{{order.status === 'completed'}}" class="btn secondary" bindtap="goReview">评价订单</button>
+  </view>
 </view>
