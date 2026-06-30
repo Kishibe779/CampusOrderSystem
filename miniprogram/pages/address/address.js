@@ -1,4 +1,5 @@
 const api = require('../../utils/api');
+const { requireLogin } = require('../../utils/role');
 
 Page({
   data: {
@@ -7,12 +8,15 @@ Page({
   },
 
   onShow() {
-    api.getAddresses().then((addresses) => this.setData({ addresses }));
+    if (!requireLogin()) return;
+    api.getAddresses().then(function (addresses) {
+      this.setData({ addresses: addresses });
+    }.bind(this));
   },
 
   onInput(event) {
-    const field = event.currentTarget.dataset.field;
-    this.setData({ [`form.${field}`]: event.detail.value });
+    var field = event.currentTarget.dataset.field;
+    this.setData({ ['form.' + field]: event.detail.value });
   },
 
   toggleDefault() {
@@ -20,8 +24,19 @@ Page({
   },
 
   edit(event) {
-    const address = this.data.addresses.find((item) => item.id === event.currentTarget.dataset.id);
-    this.setData({ form: { ...address } });
+    var address = this.data.addresses.find(function (item) {
+      return (item._id || item.id) === event.currentTarget.dataset.id;
+    });
+    if (!address) return;
+    this.setData({
+      form: {
+        _id: address._id || address.id,
+        name: address.name,
+        phone: address.phone,
+        detail: address.detail,
+        isDefault: address.isDefault
+      }
+    });
   },
 
   save() {
@@ -29,8 +44,12 @@ Page({
       wx.showToast({ title: '请补全地址', icon: 'none' });
       return;
     }
-    api.saveAddress(this.data.form).then((res) => {
-      this.setData({ addresses: res.addresses, form: { name: '', phone: '', detail: '', isDefault: false } });
+    var that = this;
+    api.saveAddress(this.data.form).then(function (res) {
+      that.setData({
+        addresses: res.addresses,
+        form: { name: '', phone: '', detail: '', isDefault: false }
+      });
       wx.showToast({ title: '已保存' });
     });
   }

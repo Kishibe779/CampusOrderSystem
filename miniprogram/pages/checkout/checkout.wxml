@@ -32,5 +32,5 @@
     </view>
   </view>
 
-  <button class="btn" bindtap="submit">模拟支付并提交</button>
+  <button class="btn" bindtap="submit">提交订单并支付</button>
 </view>

@@ -1,0 +1,9 @@
+{
+  "name": "payOrder",
+  "version": "1.0.0",
+  "description": "处理订单支付",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

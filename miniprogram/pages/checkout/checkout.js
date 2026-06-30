@@ -1,5 +1,6 @@
 const api = require('../../utils/api');
 const { calculateCartTotal } = require('../../utils/orderLogic');
+const { requireLogin } = require('../../utils/role');
 
 Page({
   data: {
@@ -13,8 +14,13 @@ Page({
   },
 
   onShow() {
-    const cart = getApp().globalData.cart || [];
-    api.getAddresses().then((addresses) => {
+    if (!requireLogin()) return;
+    const localCart = getApp().globalData.cart || [];
+    // 如果本地购物车为空，尝试从云端加载
+    const loadCart = localCart.length
+      ? Promise.resolve(localCart)
+      : api.getCart();
+    Promise.all([loadCart, api.getAddresses()]).then(([cart, addresses]) => {
       this.setData({
         cart,
         summary: calculateCartTotal(cart),
@@ -50,18 +56,28 @@ Page({
       wx.showToast({ title: '请选择地址', icon: 'none' });
       return;
     }
+    wx.showLoading({ title: '提交订单' });
     api.placeOrder({
       orderType: this.data.orderType,
       mealTime: this.data.mealTime,
       address: this.data.orderType === 'delivery' ? this.data.selectedAddress : null,
-      items: this.data.cart,
-      payNow: true
+      items: this.data.cart
     }).then((res) => {
       if (!res.ok) {
+        wx.hideLoading();
         wx.showToast({ title: res.message, icon: 'none' });
         return;
       }
-      wx.redirectTo({ url: `/pages/order-detail/order-detail?id=${res.order.id}` });
+      // 订单创建成功，调支付
+      wx.showLoading({ title: '支付中' });
+      api.payOrder(res.order.id).then((payRes) => {
+        wx.hideLoading();
+        if (!payRes.ok) {
+          wx.showToast({ title: payRes.message, icon: 'none' });
+          return;
+        }
+        wx.redirectTo({ url: `/pages/order-detail/order-detail?id=${payRes.order.id}` });
+      });
     });
   }
 });

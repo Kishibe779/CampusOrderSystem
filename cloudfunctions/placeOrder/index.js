@@ -21,10 +21,6 @@ function buildOrderNo() {
   return `CO${time}${pad(Math.floor(Math.random() * 10000), 4)}`;
 }
 
-function pickupCode() {
-  return pad(Math.floor(Math.random() * 900000) + 100000, 6);
-}
-
 exports.main = async (event) => {
   const wxContext = cloud.getWXContext();
   const items = event.items || [];
@@ -40,12 +36,12 @@ exports.main = async (event) => {
     groupInfo: event.groupInfo || null,
     items,
     totalAmount,
-    status: event.payNow === false ? 'unpaid' : 'paid',
-    pickupCode: event.orderType === 'delivery' ? '' : pickupCode(),
+    status: 'unpaid',
+    pickupCode: '',
     createdAt: db.serverDate(),
+    expireAt: Date.now() + 30 * 60 * 1000,
     timeline: [
-      { status: 'paid', text: '支付成功，订单已生成' },
-      { status: 'preparing', text: '食堂备餐中' }
+      { status: 'unpaid', text: '订单已提交，等待支付' }
     ]
   };
 
@@ -69,8 +65,9 @@ exports.main = async (event) => {
       }
     }
     const res = await tx.collection('orders').add({ data: order });
-    if (order.pickupCode) {
-      await tx.collection('pickup_codes').add({ data: { code: order.pickupCode, orderId: res._id, used: false, createdAt: db.serverDate() } });
+    const cartItems = await tx.collection('carts').where({ userOpenid: wxContext.OPENID }).get();
+    for (const item of cartItems.data) {
+      await tx.collection('carts').doc(item._id).remove();
     }
     await tx.commit();
     return { ok: true, order: { id: res._id, ...order } };
