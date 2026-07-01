@@ -25,7 +25,8 @@ const requiredFunctions = [
   'updateOrderStatus',
   'submitReview',
   'initDB',
-  'updateDishImages'
+  'updateDishImages',
+  'toggleDish'
 ];
 
 for (const name of requiredFunctions) {
