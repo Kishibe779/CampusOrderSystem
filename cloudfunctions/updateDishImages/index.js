@@ -4,33 +4,30 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
 const IMAGE_MAP = {
-  d1: 'fanqiechaodantaocan.jpg',
-  d2: 'heijiaojipaifan.jpg',
-  d3: 'dizhijixiongshala.jpg',
-  d4: 'guihuasuanmeitang.jpg',
-  d5: 'yuxiangrousigaifan.jpg',
-  d6: 'jiaoshigongzuocan.jpg'
+  d1: '/images/dishes/fanqiechaodantaocan.jpg',
+  d2: '/images/dishes/heijiaojipaifan.jpg',
+  d3: '/images/dishes/dizhijixiongshala.jpg',
+  d4: '/images/dishes/guihuasuanmeitang.jpg',
+  d5: '/images/dishes/yuxiangrousigaifan.jpg',
+  d6: '/images/dishes/jiaoshigongzuocan.jpg'
 };
-
-const BASE = 'cloud://cloud1-d3gm1xr7meaed0341.636c-cloud1-d3gm1xr7meaed0341-1447897454/DishesName/';
 
 exports.main = async () => {
   const results = [];
 
-  for (const [id, file] of Object.entries(IMAGE_MAP)) {
+  for (const [id, path] of Object.entries(IMAGE_MAP)) {
     try {
-      const fileID = BASE + file;
       const dishRes = await db.collection('dishes').where({ id }).get();
       if (dishRes.data.length) {
         await db.collection('dishes').doc(dishRes.data[0]._id).update({
-          data: { image: fileID }
+          data: { image: path }
         });
-        results.push({ id, file, status: 'updated' });
+        results.push({ id, path, status: 'updated' });
       } else {
-        results.push({ id, file, status: 'not_found' });
+        results.push({ id, path, status: 'not_found' });
       }
     } catch (e) {
-      results.push({ id, file, status: 'error', message: e.message });
+      results.push({ id, path, status: 'error', message: e.message });
     }
   }
 
